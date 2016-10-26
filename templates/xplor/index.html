@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %} - XPLOR{% endblock %}
+{% load i18n %}
+{% load static %}
+{% block appwidgets %}
+    <div class="widget-container" id="appwidgets">
+        <div class="widget-row">
+            <div class="widget widget-right">
+                <button type="button" class="btn clickable" data-get="{% url "home_itinerary_add" %}"><i class="icon-plus"></i>&nbsp;Add New</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <h1>XPLOR says...</h1>
+    hello world! 
+	    
+    {% if itinerary_list %}
+	<ul>
+	{% for itinerary in itinerary_list %}
+	    <li><a href="/itinerary/{{ itinerary.id }}/">{{ itinerary.name }}</a></li>
+	{% endfor %}
+	</ul>
+    {% else %}
+	<p>No itinerary are available.</p>
+    {% endif %}
+    
+    <img src="{% static "pictures/73597-200.png" %}" alt="Picture of Rango" /> <!-- New line -->
+    <script>
+
+        $(document).ready(function() {
+            $('.remove').click(function(e) {
+                el = $(this)
+                e.stopPropagation()
+                c = confirm('Are you sure you want to remove this incentive?')
+                if (c==true){
+                    $.ajax({
+                        url: el.attr('data-target'),
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(json) {
+                            if(json.success){
+                                el.parent().hide('slow')
+                            }
+                        }
+                    })
+                }
+            })    
+            $('.clickable').coloader({postLoad: post_load_fn})
+        })    
+    </script>
+
+{% endblock %}

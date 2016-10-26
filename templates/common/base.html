@@ -1,0 +1,179 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{{ request.info.current_formal_appname }}{% block title %}{% endblock %}</title>
+
+        <!-- meta -->
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{% block meta_description %}{% endblock %}">
+        <meta name="author" content="{% block meta_author %}{% endblock %}">
+        <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+        
+        {% block meta %}{% endblock %}
+
+        <!-- styles -->
+        <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/bootstrap-responsive.min.css" %}" rel="stylesheet">
+        <!-- <link href="{{ STATIC_URL }}bootstrap/css/darkstrap.css" rel="stylesheet"> -->
+        <link href="{% static "bootstrap/css/datepicker.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/sticky.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/sticky.css" %}" rel="stylesheet">
+        <link href="{% static "common/css/calloutloader.css" %}" rel="stylesheet">
+        <link href="{% static "common/css/base.css" %}" rel="stylesheet">
+        <link href="{% static "direct/css/direct.css" %}" rel="stylesheet">
+        <link href="{% static "direct/css/batches.css" %}" rel="stylesheet">
+        <link href="{% static "addons/css/chosen.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/bootstrap-timepicker.min.css" %}" rel="stylesheet">
+
+        {% if not request.embedded %}
+            <style type="text/css">body{padding-top:60px;padding-bottom:40px;}</style>
+        {% endif %}
+        {% if request.direct.css %}
+            <link rel="stylesheet" type="text/css" href="{% static "direct/css/" %}{{ request.direct.css }}" />
+        {% endif %}
+
+        {% block styles %}{% endblock %}
+
+        <!-- javascript -->
+        {% block jquery %}
+        <script src="{% static "common/js/jquery.min.js" %}"></script>
+        <script src="{% static "common/js/jquery-ui.min.js" %}"></script>
+        {% endblock %}
+        <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+        <script src="{% static "bootstrap/js/bootstrap-datepicker.js" %}"></script>
+        <script src="{% static "bootstrap/js/sticky.js" %}"></script>
+        <script src="{% static "common/js/json2.js" %}"></script>
+        <script src="{% static "common/js/spin.min.js" %}"></script>
+        <script src="{% static "common/js/spin-jquery.js" %}"></script>
+        <script src="{% static "common/js/waypoints.min.js" %}"></script>
+        <script src="{% static "common/js/calloutloader.js" %}"></script>
+        <script src="{% static "common/js/utils.js" %}"></script>
+        <script src="{% static "common/js/base.js" %}"></script>
+        <script src="{% static "direct/js/functions.js" %}"></script>
+        <script src="{% static "addons/js/chosen.jquery.js" %}"></script>
+        <script src="{% static "bootstrap/js/bootstrap-timepicker.min.js" %}"></script>
+
+        {% block scripts %}{% endblock %}
+
+        <!-- html5shim for IE6-8 -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <!-- icons -->
+        <link rel="shortcut icon" href="{% static "icons/ccs.ico" %}">
+    </head>
+    <body>
+        {% if not request.embedded %}
+            {% block navbar %}
+                <div class="navbar navbar-fixed-top">
+                    <div class="navbar-inner">
+                        <div class="container-fluid">
+                            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </a>
+                            <div class="nav-collapse collapse">
+                                <ul class="nav">
+                                    {% for app, details in request.direct.applications.items %}
+                                        <li {% if request.info.current_appname == app %}class="active"{% endif %} >
+                                            <a href="/direct/{{app}}">{{ details.name }}</a>                                
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+        {% endif %}
+        <div class="container-fluid">
+            {% if not request.embedded %}
+                <div class="row-fluid">
+                    {% block projects %}{% endblock %}
+                </div>
+            {% endif %}
+            {% block tabs %}{% endblock %}
+            <div class="row-fluid">
+                {% block link_list %}{% endblock %}
+                <script>
+                    $('[data-view]').each(function(k,el) {
+                        var view = $(el).attr('data-view')
+                        var current_view = "{{ request.current_view }}"
+                        if (view == current_view) {
+                            $(el).addClass('active')
+                        } else if ($(el).attr('data-view-hidden')) {
+                            $(el).addClass('hide')
+                        }
+                                
+                    })
+                </script>
+            </div>
+        </div>
+        {% block appwidgets %}{% endblock %}
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
+        <script>
+            $(function() {
+                {% if not request.embedded %}
+                    $(window).resize(function() {
+                        if ($('.navbar').css('position') == 'static') {
+                            $('body').css('padding-top', '0px')
+                        } else {
+                            h = parseInt($('.navbar').css('height').replace(/[^-\d\.]/g,'')) + 20
+                            $('body').css('padding-top', h+'px')
+                        }
+                    })
+                {% endif %}
+
+                if ($.browser.msie) 
+                    $.sticky('You are using Internet Explorer. Some features may perform poorly/unexpectedly. We recomend you upgrade to Chrome, Firefox or Safari. <br> Click here to get <a href="{% static "common/ChromeStandaloneSetup.exe"%}">Chrome</a>', 'warning')
+
+                Array.prototype.has=function(v){for(i=0;i<this.length;i++){if(this[i]==v)return true}return false}
+
+                $('[data-requires]').each(function(k,el) {
+                    var perms = JSON.parse("{{ request.json_perms}}".replace(/&quot;/g,'"'))
+                    var requires = $(el).attr('data-requires').split(',')
+                    var c = 'hide'
+                    for (var i = 0; i < requires.length; i++) {
+                        if (perms.hasOwnProperty(requires[i])) {
+                            if (perms[requires[i]].has("{{request.info.current_projectname}}"))
+                                c = ''
+                        }
+                    }
+                    $(el).addClass(c)
+
+                })
+
+                $('.sales_code').clearmark() 
+
+                $('.date-picker').attr('autocomplete', 'off')
+
+                $('.date-picker').datepicker({format: 'yyyy-mm-dd', weekStart: 1}).on('changeDate', function(ev){
+                    $(this).datepicker('hide');
+                    $(this).change();
+                    $(this).blur();
+                })
+
+                $('.dob-picker').datepicker({format: 'yyyy-mm-dd', viewMode: 'years', weekStart: 1}).on('changeDate', function(ev){
+                    if(ev.viewMode == 'days') {
+                        $(this).datepicker('hide');
+                        $(this).change();
+                        $(this).blur();
+                    }
+                });
+
+                $(window).resize()
+            })
+        </script>
+    </body>
+</html>
+
+<!-- vim: set ft=htmldjango: -->

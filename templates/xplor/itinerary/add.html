@@ -1,0 +1,25 @@
+{% load functions %}
+{% load url from future %}
+<form class="load-form">
+    <table class="table table-unbordered">
+        <tr>
+            <td>
+                {{ form.name|render_label }}
+                {{ form.name.errors }}
+                {{ form.name }}
+            </td>
+        </tr>
+    </table>
+    <div class="form-actions">
+        <input type="button" value="Save" class="btn btn-primary form-submit" />
+    </div>
+</form>
+<script>
+    $(function() {
+        $('.date-picker').datepicker({format: 'yyyy-mm-dd', weekStart: 1}).on('changeDate', function(ev){
+            $(this).datepicker('hide');
+            $(this).change();
+            $(this).blur();
+        })
+    })
+</script>

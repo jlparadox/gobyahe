@@ -1,0 +1,4 @@
+<h2>{{ object.name }}</h2>
+<p>{{ object.description }}</p>
+<p>{{ object.tags }}</p>
+<p>{{ object.location }}</p>
